@@ -1,4 +1,4 @@
-iimport streamlit as st
+import streamlit as st
 import pickle
 import numpy as np
 import pandas as pd
@@ -12,7 +12,7 @@ st.set_page_config(
     layout="centered"
 )
 
-# 고급 UI 스타일링 (전광판 3D 입체 효과, 펄스 애니메이션 등)
+# 3중 따옴표(triple-quoted string) 시작
 st.markdown("""
     <style>
     /* 메인 타이틀 강조 */
@@ -71,4 +71,42 @@ st.markdown("""
         0%, 100% { transform: scale(1); box-shadow: 0 0 30px #eab308; }
         50% { transform: scale(1.05); box-shadow: 0 0 40px #eab308; }
     }
-    @keyframes pulse
+    @keyframes pulse-green {
+        0%, 100% { transform: scale(1); box-shadow: 0 0 30px #22c55e; }
+        50% { transform: scale(1.03); box-shadow: 0 0 35px #22c55e; }
+    }
+
+    /* 어린이 보호구역 수칙 카드 디자인 */
+    .school-zone-card {
+        border-radius: 16px;
+        padding: 24px;
+        margin-top: 25px;
+        transition: all 0.3s ease;
+    }
+    </style>
+""", unsafe_allow_html=True) # 3중 따옴표 정상 종료
+
+# ---------------------------------------------------------
+# 1. Model Loading
+# ---------------------------------------------------------
+@st.cache_resource
+def load_orange_model(model_path="traffic_casualty_model.pkcls"):
+    try:
+        with open(model_path, "rb") as f:
+            model = pickle.load(f)
+        return model
+    except Exception as e:
+        st.error(f"모델 파일('{model_path}') 로드 실패: {e}")
+        return None
+
+model = load_orange_model()
+
+# ---------------------------------------------------------
+# Header & UI Title
+# ---------------------------------------------------------
+st.markdown('<div class="main-title">🚦 교통사고 사망자 수 실시간 예측 & 안전 모니터링</div>', unsafe_allow_html=True)
+st.write("지역별 사고 조건과 부상자 수치를 슬라이더로 조절하여 **위험도 예측 결과**를 실시간으로 모니터링하세요.")
+
+st.markdown("---")
+
+# --------------------------------
